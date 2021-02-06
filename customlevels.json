@@ -1,4 +1,6 @@
+// Template for the customlevels.json
 {
+	// Number: levelname
 	"100000": "op",
 	"100001": "customlevel2"
 }
