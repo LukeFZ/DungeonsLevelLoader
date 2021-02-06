@@ -9,7 +9,8 @@ A custom level loader for Minecraft: Dungeons. (Modified version of flat20's [du
 2. Next, unzip the [Latest Release](https://github.com/LukeFZ/DungeonsLevelLoader/releases/latest) of this tool into a new folder.
 If this is your first time playing custom levels, you need to also place the "Table.pak" into your "~mods" folder from step 1.
 
-3. Place the "customlevels.json" file created by the [Dungeons Mod Merger](https://github.com/LukeFZ/DungeonsModMerger) next to the "LevelLoader.exe".
+3. Place a "customlevels.json" file containing the numbers that should correspond to each level next to the "LevelLoader.exe".
+(The [Dungeons Mod Merger](https://github.com/LukeFZ/DungeonsModMerger) creates this file automatically for you.)
 
 4. Start Minecraft: Dungeons. On the Main Menu, double-click the LevelLoader.exe to start it.
 After a short time, a blue-ish window should appear with a list of numbers and the custom level name next to them. 
