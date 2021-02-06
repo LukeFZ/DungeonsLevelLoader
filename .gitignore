@@ -1,0 +1,10 @@
+*.exe*
+*.dll
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+*.zip
+.vscode/
+PolyHook_2_0/
