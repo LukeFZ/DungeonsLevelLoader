@@ -42,7 +42,7 @@ struct FLevelSettings
 	ELevelNames                                        levelName;                                                // 0x0018(0x0001) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData01[0x7];                                       // 0x0019(0x0007) MISSED OFFSET
 	FString                                            levelFilename;                                            // 0x0020(0x0010) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor)
-	int                                                seed;                                                     // 0x0030(0x0004) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
+	int32                                              seed;                                                     // 0x0030(0x0004) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
 	unsigned char                                      UnknownData02[0x4];                                       // 0x0034(0x0004) MISSED OFFSET
 	TArray<FString>                                    progressionKeys;                                          // 0x0038(0x0010) (ZeroConstructor)
 };
@@ -54,7 +54,7 @@ typedef void (__fastcall *tLoadLevel)(UObject*, FLevelSettings&, EMapLoadType, f
 void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType mapLoadType, float fadeInTime, float fadeOutTime, class APlayerController* playerController, class FString& connString);
 
 // SDK::UObject*,SDK::FLevelSettings&, SDK::EMapLoadType, float, float, class SDK::APlayerController*, struct SDK::FString&
-void AHUD_PostRender(void *hud);
+//void AHUD_PostRender(void *hud);
 
 tAHUD_DrawRect AHUD_DrawRect = nullptr;
 tAHUD_DrawText AHUD_DrawText = nullptr;
@@ -125,9 +125,10 @@ void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType
             printf("New Level Filename: %s\n", origLevelFileString.c_str());
             hookedCall = false;
  
-            int randseed = (rand() % 35000) + 1;
+            modified.seed = rand() % 35001;
 
-            modified.seed = randseed;
+            printf("New seed: %i\n",modified.seed);
+
 
             ((tLoadLevel)spy::GetHook(RefLoadLevel)->original)(thisBpGameInstance, modified, mapLoadType, fadeInTime, fadeOutTime, playerController, connString);
             return;
@@ -159,6 +160,7 @@ void AHUD_PostRender(void *hud) {
 void Init() {
     
      uiData.seeds = {};
+     srand(time(NULL));
 
     // Read launcher_settings.json for Minecraft Dungeons path
     using json = nlohmann::json;
