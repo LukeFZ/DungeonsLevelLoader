@@ -39,7 +39,7 @@ struct MainWindow
         //for (const auto &level: data->seeds) {
         for (auto it = data->seeds.begin(); it != data->seeds.end(); it++) {
             auto seed = *it;
-            ImGui::Text("Seed %s = %s\n", seed.first.c_str(), seed.second.c_str());
+            ImGui::Text("Level ID %s = %s\n", seed.first.c_str(), seed.second.c_str());
         }
 
         ImGui::Separator();
@@ -91,7 +91,7 @@ int StartUI(UIData *data)
     DWORD threadId; // Can we ignore this?
     hThread = CreateThread( NULL, 0, UIThreadFunction, data, 0, &threadId);
     if (hThread == NULL) {
-        printf("unabel to create UI thread\n");
+        printf("unable to create UI thread\n");
         return 1;
     }
     return 0;

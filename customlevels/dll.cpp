@@ -110,7 +110,7 @@ void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType
         // std::cout << "Name: " << (wchat_t*)params->levelName.
         //printf("  Name: %ws\n", (wchar_t*)params->levelName.GetData());
         printf("  Seed: %i\n", params.seed);
-        SeedValueHUDString = FString(makeWide(std::to_string(params.seed)).c_str());
+        //SeedValueHUDString = FString(makeWide(std::to_string(params.seed)).c_str());
 
             auto element = uiData.seeds.find(std::to_string(params.seed));
             if (element != uiData.seeds.end()) {
@@ -196,11 +196,11 @@ void Init() {
     }
 
     spy::HookFunctionRef(RefLoadLevel, &LoadLevel, nullptr);
-    spy::HookFunctionRef(RefAHUD_PostRender, &AHUD_PostRender, nullptr);
-    AHUD_DrawRect = (tAHUD_DrawRect)spyData->functionPtrs["AHUD_DrawRect"];
-    AHUD_DrawText = (tAHUD_DrawText)spyData->functionPtrs["AHUD_DrawText"];
-    FName_Init = (tFName_Init)spyData->functionPtrs["RefFName_Init"];
-    FStringTableRegistry_Internal_LocTableFromFile = (tFStringTableRegistry_Internal_LocTableFromFile)spyData->functionPtrs["FStringTableRegistry_Internal_LocTableFromFile"];
+    //spy::HookFunctionRef(RefAHUD_PostRender, &AHUD_PostRender, nullptr);
+    //AHUD_DrawRect = (tAHUD_DrawRect)spyData->functionPtrs["AHUD_DrawRect"];
+    //AHUD_DrawText = (tAHUD_DrawText)spyData->functionPtrs["AHUD_DrawText"];
+    //FName_Init = (tFName_Init)spyData->functionPtrs["RefFName_Init"];
+    //FStringTableRegistry_Internal_LocTableFromFile = (tFStringTableRegistry_Internal_LocTableFromFile)spyData->functionPtrs["FStringTableRegistry_Internal_LocTableFromFile"];
 
     spy::InitConsole();
         bool result = spy::InitCheatCommands([](bool result) {
