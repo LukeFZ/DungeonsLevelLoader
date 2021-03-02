@@ -32,26 +32,10 @@ FString levelFile;
 
 void Init();
 
-struct FLevelSettings
-{
-	EGameDifficulty                                    difficulty;                                               // 0x0000(0x0001) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
-	EThreatLevel                                       threatLevel;                                              // 0x0001(0x0001) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData00[0x2];                                       // 0x0002(0x0002) MISSED OFFSET
-	struct FEndlessStruggle                            EndlessStruggle;                                          // 0x0004(0x0004) (BlueprintVisible, BlueprintReadOnly)
-	FString                                            unrealMapName;                                            // 0x0008(0x0010) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor)
-	ELevelNames                                        levelName;                                                // 0x0018(0x0001) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData01[0x7];                                       // 0x0019(0x0007) MISSED OFFSET
-	FString                                            levelFilename;                                            // 0x0020(0x0010) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor)
-	int32                                              seed;                                                     // 0x0030(0x0004) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
-	unsigned char                                      UnknownData02[0x4];                                       // 0x0034(0x0004) MISSED OFFSET
-	TArray<FString>                                    progressionKeys;                                          // 0x0038(0x0010) (ZeroConstructor)
-};
-
-
 // __int64 __fastcall subLevelLoad(__int64 a1, __int64 a2, char a3)
 //typedef void (__fastcall *tLoadLevel)(UObject* thisBpGameInstance, FLevelSettings *params, uint8 r8b, double xmm3, DWORD64 stackFloat);
-typedef void (__fastcall *tLoadLevel)(UObject*, FLevelSettings&, EMapLoadType, float, float, class APlayerController*, class FString&);
-void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType mapLoadType, float fadeInTime, float fadeOutTime, class APlayerController* playerController, class FString& connString);
+typedef void (__fastcall *tLoadLevel)(UObject*, FLevelSettings&, uint8_t, float, float, class APlayerController*, class FString&);
+void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, uint8_t mapLoadType, float fadeInTime, float fadeOutTime, class APlayerController* playerController, class FString& connString);
 
 // SDK::UObject*,SDK::FLevelSettings&, SDK::EMapLoadType, float, float, class SDK::APlayerController*, struct SDK::FString&
 //void AHUD_PostRender(void *hud);
@@ -103,16 +87,16 @@ std::wstring makeWide(std::string text) {
 
 bool hookedCall;
 
-void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType mapLoadType, float fadeInTime, float fadeOutTime, class APlayerController* playerController, class FString& connString) {
-    if (params.seed != 0) {
+void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, uint8_t mapLoadType, float fadeInTime, float fadeOutTime, class APlayerController* playerController, class FString& connString) {
+    if (params.MissionState.Seed != 0) {
         hookedCall = true;
         printf("LevelLoad\n");
         // std::cout << "Name: " << (wchat_t*)params->levelName.
         //printf("  Name: %ws\n", (wchar_t*)params->levelName.GetData());
-        printf("  Seed: %i\n", params.seed);
-        //SeedValueHUDString = FString(makeWide(std::to_string(params.seed)).c_str());
+        printf("  Seed: %i\n", params.MissionState.Seed);
+        //SeedValueHUDString = FString(makeWide(std::to_string(params.MissionState.Seed)).c_str());
 
-            auto element = uiData.seeds.find(std::to_string(params.seed));
+            auto element = uiData.seeds.find(std::to_string(params.MissionState.Seed));
             if (element != uiData.seeds.end()) {
 
             printf(" Hooked Call!\n");
@@ -125,9 +109,9 @@ void LoadLevel(UObject* thisBpGameInstance, FLevelSettings& params, EMapLoadType
             printf("New Level Filename: %s\n", origLevelFileString.c_str());
             hookedCall = false;
  
-            modified.seed = rand() % 35001;
+            modified.MissionState.Seed = rand() % 35001;
 
-            printf("New seed: %i\n",modified.seed);
+            printf("New Seed: %i\n",modified.MissionState.Seed);
 
 
             ((tLoadLevel)spy::GetHook(RefLoadLevel)->original)(thisBpGameInstance, modified, mapLoadType, fadeInTime, fadeOutTime, playerController, connString);
@@ -201,8 +185,8 @@ void Init() {
     //spy::HookFunctionRef(RefAHUD_PostRender, &AHUD_PostRender, nullptr);
     //AHUD_DrawRect = (tAHUD_DrawRect)spyData->functionPtrs["AHUD_DrawRect"];
     //AHUD_DrawText = (tAHUD_DrawText)spyData->functionPtrs["AHUD_DrawText"];
-    //FName_Init = (tFName_Init)spyData->functionPtrs["RefFName_Init"];
-    //FStringTableRegistry_Internal_LocTableFromFile = (tFStringTableRegistry_Internal_LocTableFromFile)spyData->functionPtrs["FStringTableRegistry_Internal_LocTableFromFile"];
+    FName_Init = (tFName_Init)spyData->functionPtrs["RefFName_Init"];
+    FStringTableRegistry_Internal_LocTableFromFile = (tFStringTableRegistry_Internal_LocTableFromFile)spyData->functionPtrs["FStringTableRegistry_Internal_LocTableFromFile"];
 
     spy::InitConsole();
         bool result = spy::InitCheatCommands([](bool result) {

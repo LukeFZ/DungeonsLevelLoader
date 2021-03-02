@@ -11,23 +11,6 @@ enum class EGameDifficulty : uint8_t
 	EGameDifficulty__EGameDifficulty_MAX = 5
 };
 
-enum class EMapLoadType : uint8_t
-{
-	EMapLoadType__Unset            = 0,
-	EMapLoadType__StartLobbySession = 1,
-	EMapLoadType__StartIngameSession = 2,
-	EMapLoadType__OpenMenu         = 3,
-	EMapLoadType__OpenIngame       = 4,
-	EMapLoadType__OpenLobby        = 5,
-	EMapLoadType__TravelIngameServer = 6,
-	EMapLoadType__TravelIngameClient = 7,
-	EMapLoadType__TravelLobbyServer = 8,
-	EMapLoadType__TravelLobbyClient = 9,
-	EMapLoadType__JoinIngameSession = 10,
-	EMapLoadType__JoinLobbySession = 11,
-	EMapLoadType__EMapLoadType_MAX = 12
-};
-
 enum class ELevelNames : uint8_t
 {
 	ELevelNames__Invalid           = 0,
@@ -153,4 +136,52 @@ enum class EThreatLevel : uint8_t
 	EThreatLevel__Threat06         = 7,
 	EThreatLevel__ENUM_COUNT       = 8,
 	EThreatLevel__EThreatLevel_MAX = 9
+};
+
+enum class EDLCName : uint8_t
+{
+	EDLCName__Invalid              = 0,
+	EDLCName__TheJungleAwakens     = 1,
+	EDLCName__TheCreepingWinter    = 2,
+	EDLCName__Mountains            = 3,
+	EDLCName__Nether               = 4,
+	EDLCName__Oceans               = 5,
+	EDLCName__TheEnd               = 6,
+	EDLCName__count                = 7,
+	EDLCName__EDLCName_MAX         = 8
+};
+
+struct FEnchantmentData
+{
+	unsigned char                                      UnknownData01[0xC];                                       // 0x000A(0x0002) MISSED OFFSET
+};
+
+struct FInventoryItemData
+{
+	unsigned char                                      UnknownData01[0x68];                                       // 0x005C(0x000C)
+};
+
+struct FMissionDifficulty
+{
+	uint8_t                                        	   mission;                                                  // 0x0000(0x0001) (BlueprintVisible, ZeroConstructor, IsPlainOldData)
+	uint8_t                                    		   difficulty;                                               // 0x0001(0x0001) (BlueprintVisible, ZeroConstructor, IsPlainOldData)
+	uint8_t                                       	   threatLevel;                                              // 0x0002(0x0001) (BlueprintVisible, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData00[0x1];                                       // 0x0003(0x0001) MISSED OFFSET
+	struct FEndlessStruggle                            EndlessStruggle;                                          // 0x0004(0x0004) (BlueprintVisible)
+};
+
+struct FMissionState
+{
+	struct FMissionDifficulty                          MissionDifficulty;                                        // 0x0000(0x0008)
+	int                                                Seed;                                                     // 0x0008(0x0004) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData)
+	unsigned char                                      UnknownData00[0x44];                                      // 0x000C(0x0004) MISSED OFFSET
+};
+
+
+struct FLevelSettings
+{
+	struct FMissionState                               MissionState;                                             // 0x0000(0x0050) (BlueprintVisible, BlueprintReadOnly)
+	class FString                                     unrealMapName;                                            // 0x0050(0x0010) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor)
+	class FString                                     levelFilename;                                            // 0x0060(0x0010) (BlueprintVisible, BlueprintReadOnly, ZeroConstructor)
+	TArray<class FString>                             progressionKeys;                                          // 0x0070(0x0010) (ZeroConstructor)
 };
